@@ -16,9 +16,25 @@ function run(event) {
   axios
     .get("https://viacep.com.br/ws/" + zipCode + "/json/")
     .then(function (response) {
-      console.log(response.data);
+      if (response.data.erro) {
+        throw new Error("CEP Inválido!");
+      }
+
+      content.innerHTML = "";
+      createLine(response.data.logradouro);
+      createLine(response.data.bairro);
+      createLine(response.data.localidade + "/" + response.data.uf);
     })
     .catch(function (error) {
-      console.log(error);
+      content.innerHTML = "";
+      createLine("Ops, algo deu errado!");
     });
+
+  function createLine(text) {
+    var line = document.createElement("p");
+    var text = document.createTextNode(text);
+
+    line.appendChild(text);
+    content.appendChild(line);
+  }
 }
